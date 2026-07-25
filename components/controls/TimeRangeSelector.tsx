@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import type { TimeRange } from '@/lib/types';
 
 interface TimeRangeSelectorProps {
@@ -18,10 +18,13 @@ const PRESETS = [
 ] as const;
 
 function TimeRangeSelector({ timeRange, onChange }: TimeRangeSelectorProps) {
-  const [activePreset, setActivePreset] = useState<number>(0);
+  const activePreset = PRESETS.findIndex(p => {
+    if (p.ms === Number.MAX_SAFE_INTEGER) return timeRange.start === 0;
+    const duration = timeRange.end - timeRange.start;
+    return Math.abs(duration - p.ms) < 1_500;
+  });
 
   const applyPreset = useCallback((ms: number, idx: number) => {
-    setActivePreset(idx);
     const end   = Date.now();
     const start = ms === Number.MAX_SAFE_INTEGER ? 0 : end - ms;
     onChange({ start, end });

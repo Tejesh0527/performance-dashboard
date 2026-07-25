@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useChartRenderer, useZoomPan, buildViewRange, sampleForDisplay } from '@/hooks/useChartRenderer';
 import {
   clearCanvas, drawGrid, drawLineSeries,
   computeXTicks, computeYTicks,
 } from '@/lib/canvasUtils';
-import type { RenderContext, DataPoint, ViewRange } from '@/lib/types';
+import type { RenderContext, DataPoint } from '@/lib/types';
 import type { SERIES_CONFIGS } from '@/lib/dataGenerator';
 
 interface LineChartProps {
@@ -27,10 +27,10 @@ function LineChart({ data, series, title = 'Line Chart', filled = true, height =
   );
   const baseViewRange = useMemo(() => buildViewRange(filteredData), [filteredData]);
 
-  // Render function (passed to useChartRenderer)
   const renderRef = useRef<(rc: RenderContext) => void>(() => {});
+  const stableRender = useCallback((rc: RenderContext) => renderRef.current(rc), []);
 
-  const { markDirty } = useChartRenderer(canvasRef, (rc) => renderRef.current(rc), [filteredData, series]);
+  const { markDirty } = useChartRenderer(canvasRef, stableRender, [filteredData, series, filled]);
 
   // Zoom + Pan
   const { zoom, zoomedViewRange, resetZoom } = useZoomPan(canvasRef, baseViewRange, markDirty);
@@ -40,8 +40,7 @@ function LineChart({ data, series, title = 'Line Chart', filled = true, height =
   const xTicks = useMemo(() => computeXTicks(viewRange, 5), [viewRange]);
   const yTicks = useMemo(() => computeYTicks(viewRange, 5), [viewRange]);
 
-  // Canvas render
-  renderRef.current = useCallback((rc: RenderContext) => {
+  const renderChart = useCallback((rc: RenderContext) => {
     rc.viewRange = viewRange;
     clearCanvas(rc);
 
@@ -58,8 +57,13 @@ function LineChart({ data, series, title = 'Line Chart', filled = true, height =
     }
   }, [filteredData, viewRange, series, filled]);
 
-  // Mark dirty when viewRange changes from zoom/pan
-  useMemo(() => { markDirty(); }, [viewRange, markDirty]);
+  useEffect(() => {
+    renderRef.current = renderChart;
+  }, [renderChart]);
+
+  useEffect(() => {
+    markDirty();
+  }, [viewRange, markDirty]);
 
   const PADDING = { top: 40, right: 30, bottom: 50, left: 65 };
   const canvasH = height - 45;

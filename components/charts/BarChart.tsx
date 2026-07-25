@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useChartRenderer, useZoomPan, buildViewRange } from '@/hooks/useChartRenderer';
 import {
   clearCanvas, drawGrid, drawAxes, computeXTicks, computeYTicks,
@@ -41,14 +41,15 @@ function BarChart({ data, series, title = 'Bar Chart', height = 280, granularity
   }, [aggData]);
 
   const renderRef = useRef<(rc: RenderContext) => void>(() => {});
+  const stableRender = useCallback((rc: RenderContext) => renderRef.current(rc), []);
 
-  const { markDirty } = useChartRenderer(canvasRef, (rc) => renderRef.current(rc), [aggData, series, granularity]);
+  const { markDirty } = useChartRenderer(canvasRef, stableRender, [aggData, series, granularity]);
 
   // Zoom + Pan
   const { zoom, zoomedViewRange, resetZoom } = useZoomPan(canvasRef, baseViewRange, markDirty);
   const viewRange = zoomedViewRange();
 
-  renderRef.current = useCallback((rc: RenderContext) => {
+  const renderChart = useCallback((rc: RenderContext) => {
     rc.viewRange = viewRange;
     clearCanvas(rc);
 
@@ -105,7 +106,13 @@ function BarChart({ data, series, title = 'Bar Chart', height = 280, granularity
     drawAxes(rc, xTicks, yTicks, `Time (${granularity})`, 'Avg Value');
   }, [aggData, viewRange, series, granularity]);
 
-  useMemo(() => { markDirty(); }, [viewRange, markDirty]);
+  useEffect(() => {
+    renderRef.current = renderChart;
+  }, [renderChart]);
+
+  useEffect(() => {
+    markDirty();
+  }, [viewRange, markDirty]);
 
   return (
     <div className="chart-container" style={{ height }}>

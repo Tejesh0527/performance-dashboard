@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useCallback, useEffect, useMemo } from 'react';
 import { useChartRenderer, useZoomPan, buildViewRange, sampleForDisplay } from '@/hooks/useChartRenderer';
 import {
   clearCanvas, drawGrid, drawAxes, computeXTicks, computeYTicks,
@@ -28,14 +28,15 @@ function ScatterPlot({ data, series, title = 'Scatter Plot', height = 280, point
   const baseViewRange = useMemo(() => buildViewRange(filteredData), [filteredData]);
 
   const renderRef = useRef<(rc: RenderContext) => void>(() => {});
+  const stableRender = useCallback((rc: RenderContext) => renderRef.current(rc), []);
 
-  const { markDirty } = useChartRenderer(canvasRef, (rc) => renderRef.current(rc), [filteredData, series, pointRadius]);
+  const { markDirty } = useChartRenderer(canvasRef, stableRender, [filteredData, series, pointRadius]);
 
   // Zoom + Pan
   const { zoom, zoomedViewRange, resetZoom } = useZoomPan(canvasRef, baseViewRange, markDirty);
   const viewRange = zoomedViewRange();
 
-  renderRef.current = useCallback((rc: RenderContext) => {
+  const renderChart = useCallback((rc: RenderContext) => {
     rc.viewRange = viewRange;
     clearCanvas(rc);
 
@@ -79,7 +80,13 @@ function ScatterPlot({ data, series, title = 'Scatter Plot', height = 280, point
     drawAxes(rc, xTicks, yTicks, 'Time', 'Value');
   }, [filteredData, viewRange, series, pointRadius]);
 
-  useMemo(() => { markDirty(); }, [viewRange, markDirty]);
+  useEffect(() => {
+    renderRef.current = renderChart;
+  }, [renderChart]);
+
+  useEffect(() => {
+    markDirty();
+  }, [viewRange, markDirty]);
 
   return (
     <div className="chart-container" style={{ height }}>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useVirtualization } from '@/hooks/useVirtualization';
 import type { DataPoint, TableColumn } from '@/lib/types';
 

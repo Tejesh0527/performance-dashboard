@@ -23,8 +23,6 @@ export function usePerformanceMonitor(
   }, [dataProcessingTime, pointCount]);
 
   useEffect(() => {
-    let prev = performance.now();
-
     const loop = () => {
       const collector = collectorRef.current;
       collector.fps.tick();

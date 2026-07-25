@@ -1,4 +1,4 @@
-import type { RenderContext, AxisTick, ViewRange, DataPoint, SeriesConfig } from './types';
+import type { RenderContext, AxisTick, ViewRange, DataPoint } from './types';
 
 // ─── DPR-aware canvas setup ───────────────────────────────────────────────────
 
@@ -111,7 +111,7 @@ export function drawAxes(
   xLabel = '',
   yLabel = '',
 ): void {
-  const { ctx, padding, plotWidth, plotHeight, width, height } = rc;
+  const { ctx, padding, plotWidth, plotHeight, height } = rc;
 
   ctx.save();
   ctx.strokeStyle = 'rgba(255,255,255,0.2)';
