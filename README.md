@@ -4,6 +4,9 @@
 [![React](https://img.shields.io/badge/React-19+-61DAFB?style=flat-square&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Canvas API](https://img.shields.io/badge/Render-HTML5_Canvas-E34F26?style=flat-square&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=flat-square&logo=vercel)](https://performance-dashboard-alpha-woad.vercel.app)
+
+> 🚀 **Live Demo**: [https://performance-dashboard-alpha-woad.vercel.app](https://performance-dashboard-alpha-woad.vercel.app)
 
 A high-performance Next.js dashboard capable of rendering **10,000 to 100,000+ real-time data points at 60 FPS** with low latency (<15ms interaction response time) and zero memory leaks. Built using HTML5 Canvas, Web Workers, React Concurrent Features (`useTransition`), and Next.js App Router.
 
