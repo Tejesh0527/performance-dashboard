@@ -5,6 +5,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Pinia](https://img.shields.io/badge/Pinia-2+-yellow?style=flat-square&logo=vue.js)](https://pinia.vuejs.org/)
 [![Canvas API](https://img.shields.io/badge/Render-HTML5_Canvas_%2B_SVG-E34F26?style=flat-square&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=flat-square&logo=vercel)](https://performance-dashboard-alpha-woad.vercel.app)
+
+> 🚀 **Live Demo**: [https://performance-dashboard-alpha-woad.vercel.app](https://performance-dashboard-alpha-woad.vercel.app)
 
 A production-quality, high-performance real-time analytics dashboard capable of rendering **10,000 to 100,000+ real-time data points at 60 FPS** with low interaction latency (< 15ms) and zero memory leaks over long sessions.
 
